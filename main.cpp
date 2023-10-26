@@ -6,27 +6,22 @@
 // Description : Hello World in C, Ansi-style
 //============================================================================
 
-#include <string>
 #include <iostream>
+#include <string>
 
-#include <cstdio>      /* printf, NULL */
-#include <cstdlib>     /* srand, rand */
-#include <ctime>       /* time */
+#include <cstdio>  /* printf, NULL */
+#include <cstdlib> /* srand, rand */
+#include <ctime>   /* time */
 
 #include <unistd.h>
 
-#include "TASK3.H"
-
 using namespace std;
 
-
-int main(){
-	srand(time(nullptr));
-	TASK3::demoTask3();
-    return 0;
+int main() {
+  /*srand(time(nullptr));
+  TASK3::demoTask3();*/
+  system("gnome-terminal -- ./server");
+  system("gnome-terminal -- ./client");
+  cout << "You Won!";
+  return 0;
 }
-
-
-
-
-
