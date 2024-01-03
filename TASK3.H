@@ -14,8 +14,11 @@
  *
  */
 
+
 #ifndef TASK3_H_
 #define TASK3_H_
+
+
 
 #include <string>
 
@@ -29,7 +32,8 @@ using namespace std;
  * of a the simplified game battle ship.
  *
  */
-namespace TASK3 {
+namespace TASK3{
+
 
 /**
  *
@@ -38,12 +42,9 @@ namespace TASK3 {
  *  Represents the states a Block can have.
  *
  */
-enum BlockState {
-  BLOCK_CLEAR = 0, /**< BLOCK_CLEAR  is the initial state of a block. */
-  BLOCK_USED = 1,  /**< BLOCK_USED   tells that the block is part of a ship and
-                      not hit yet. */
-  BLOCK_HIT = 2    /**< BLOCK_HIT    tells that the block is prat of a hip and
-                      already hit.*/
+enum BlockState  {BLOCK_CLEAR = 0, /**< BLOCK_CLEAR  is the initial state of a block. */
+				  BLOCK_USED = 1,  /**< BLOCK_USED   tells that the block is part of a ship and not hit yet. */
+				  BLOCK_HIT = 2  /**< BLOCK_HIT    tells that the block is prat of a hip and already hit.*/
 };
 
 /**
@@ -53,14 +54,12 @@ enum BlockState {
  * Represents the states a battle ship (see class Ship) can have.
  *
  */
-enum ShipState {
-  INPROGRESS =
-      0, /**< INPROGRESS Ship is not finished yet, blocks are still missing.*/
-  ALIVE = 1,    /**< ALIVE The ship is complete and nor block of the ship is hit
-                   yet. */
-  HIT = 2,      /**< HIT At least one block of the ship is hit already*/
-  DESTROYED = 3 /**< DESTROYED All blocks of the ship are hit.*/
+enum ShipState   {INPROGRESS = 0, /**< INPROGRESS Ship is not finished yet, blocks are still missing.*/
+				  ALIVE= 1, /**< ALIVE The ship is complete and nor block of the ship is hit yet. */
+				  HIT = 2, /**< HIT At least one block of the ship is hit already*/
+				  DESTROYED = 3 /**< DESTROYED All blocks of the ship are hit.*/
 };
+
 
 /**
  *
@@ -70,11 +69,10 @@ enum ShipState {
  * The number represents the number of blocks a ship consists of.
  *
  */
-enum ShipType {
-  FIVE = 5,  /**< FIVE A battle ship that is built of five blocks.*/
-  FOUR = 4,  /**< FOUR A battle ship that is built of four blocks.*/
-  THREE = 3, /**< THREE A battle ship that is built of three blocks.*/
-  TWO = 2    /**< TWO A battle ship that is built of two blocks.*/
+enum ShipType    {FIVE=5, /**< FIVE A battle ship that is built of five blocks.*/
+				  FOUR=4, /**< FOUR A battle ship that is built of four blocks.*/
+				  THREE=3, /**< THREE A battle ship that is built of three blocks.*/
+				  TWO=2 /**< TWO A battle ship that is built of two blocks.*/
 };
 
 /**
@@ -85,15 +83,11 @@ enum ShipType {
  *
  *
  */
-enum ShootResult {
-  WATER,          /**< WATER The shot has not hit a block. */
-  SHIP_HIT,       /**< SHIP_HIT The shot has hit a block. */
-  SHIP_DESTROYED, /**< SHIP_DESTROYED The shot has hit the last non-hit block.
-                     Now all blocks a ship are hit, the ship is destroyed.*/
-  ALL_SHIPS_DESTROYED, /**< ALL_SHIPS_DESTROYED With the shot all the ships in
-                          the game are destroyed now. */
-  GAME_OVER /**<  GAME_OVER With the shot all ships in the game are destroyed
-               and the game is over.*/
+enum ShootResult {WATER, /**< WATER The shot has not hit a block. */
+	              SHIP_HIT, /**< SHIP_HIT The shot has hit a block. */
+	              SHIP_DESTROYED, /**< SHIP_DESTROYED The shot has hit the last non-hit block. Now all blocks a ship are hit, the ship is destroyed.*/
+	              ALL_SHIPS_DESTROYED, /**< ALL_SHIPS_DESTROYED With the shot all the ships in the game are destroyed now. */
+	              GAME_OVER /**<  GAME_OVER With the shot all ships in the game are destroyed and the game is over.*/
 };
 
 /**
@@ -108,25 +102,15 @@ enum ShootResult {
  * enum variable.
  *
  */
-class Block {
+class Block{
 public:
-  int x_; // Coordinate of a block starting with value 1; value -1 means block
-          // not placed yet
-  int y_; // Coordinate of a block starting with value 1; value -1 means block
-          // not placed yet
-  BlockState state_ = BLOCK_CLEAR;
-  Block() {
-    x_ = -1;
-    y_ = -1;
-    state_ = BLOCK_CLEAR;
-  };
-  Block(int x, int y, BlockState state) {
-    x_ = x;
-    y_ = y;
-    state_ = BLOCK_CLEAR;
-  };
+	int x_; // Coordinate of a block starting with value 1; value -1 means block not placed yet
+	int y_; // Coordinate of a block starting with value 1; value -1 means block not placed yet
+	BlockState state_ = BLOCK_CLEAR;
+	Block(){x_=-1; y_=-1;state_=BLOCK_CLEAR;};
+	Block(int x, int y, BlockState state){x_=x; y_=y; state_=BLOCK_CLEAR;};
 
-  void print();
+	void print();
 };
 
 /**
@@ -141,20 +125,20 @@ public:
  * states of the blocks.
  *
  */
-class Ship {
+class Ship{
 public:
-  Block **blocks_;
-  int nmbBlocks_;
-  ShipType shipname_;
-  ShipState state_;
+	Block*         *blocks_;
+	int            nmbBlocks_;
+	ShipType       shipname_;
+	ShipState      state_;
 
-  /**
-   *
-   * \brief Prints the state, properties and elements of the ship
-   * on standard output.
-   *
-   */
-  void print();
+	/**
+	 *
+	 * \brief Prints the state, properties and elements of the ship
+	 * on standard output.
+	 *
+	 */
+	void print();
 };
 
 /**
@@ -170,89 +154,91 @@ public:
  * this class.
  *
  */
-class World {
+class World{
 public:
-  /**
-   *
-   * \brief Constructor which standard values for board dimension and
-   * number of ships of different types.
-   *
-   */
-  World() : World(10, 10, 1, 2, 3, 4){};
+	/**
+	 *
+	 * \brief Constructor which standard values for board dimension and
+	 * number of ships of different types.
+	 *
+	 */
+	World():World(10,10,1,2,3,4){};
 
-  /**
-   *
-   * \brief parameterized constructor
-   *
-   * The board is filled by the constructor. Notice, the board building is
-   * made by a try-and-error strategy. If the number of ships is to large
-   * for the board dimension then the building process runs into a endless-loop.
-   *
-   * \param maxX int Dimension of X (should not be smaller than 10)
-   * \param maxY int Dimension of Y (should not be smaller than 10)
-   * \param nmbFiver int (>0) the number of ships built of five blocks
-   * \param nmbFourer int (>0) the number of ships built of four blocks
-   * \param nmbThreer int (>0) the number of ships built of three blocks
-   * \param nmbTwoer int (>0) the number of ships built of two blocks
-   *
-   */
-  World(int maxX, int maxY, int nmbFiver, int nmbFourer, int nmbThreer,
-        int nmbTwoer);
+	/**
+	 *
+	 * \brief parameterized constructor
+	 *
+	 * The board is filled by the constructor. Notice, the board building is
+	 * made by a try-and-error strategy. If the number of ships is to large
+	 * for the board dimension then the building process runs into a endless-loop.
+	 *
+	 * \param maxX int Dimension of X (should not be smaller than 10)
+	 * \param maxY int Dimension of Y (should not be smaller than 10)
+	 * \param nmbFiver int (>0) the number of ships built of five blocks
+	 * \param nmbFourer int (>0) the number of ships built of four blocks
+	 * \param nmbThreer int (>0) the number of ships built of three blocks
+	 * \param nmbTwoer int (>0) the number of ships built of two blocks
+	 *
+	 */
+	World(int maxX, int maxY, int nmbFiver, int nmbFourer, int nmbThreer, int nmbTwoer);
 
-  /**
-   *
-   * \brief Executes a shot on the board.
-   *
-   * The result of the method delivers the success of the shot (see enum
-   *ShootResult )
-   *
-   *	\return ShootResult
-   */
-  ShootResult shoot(int x, int y);
+	/**
+	 *
+	 * \brief Executes a shot on the board.
+	 *
+	 * The result of the method delivers the success of the shot (see enum ShootResult )
+	 *
+	 *	\return ShootResult
+	 */
+	ShootResult shoot(int x, int y);
 
-  /**
-   *
-   * \brief Prints all elements of the board and their current state
-   * on standard output.
-   *
-   */
-  void print();
+	/**
+	 *
+	 * \brief Prints all elements of the board and their current state
+	 * on standard output.
+	 *
+	 */
+	void print();
 
-  /**
-   *
-   * \brief Prints the current state of the board on standard output as
-   * pseudo-graphic made of ascii-code.
-   *
-   */
-  void printBoard();
+	/**
+	 *
+	 * \brief Prints the current state of the board on standard output as
+	 * pseudo-graphic made of ascii-code.
+	 *
+	 */
+	void printBoard();
 
 private:
-  /**
-   *
-   * \brief Places all ships on the board.
-   *
-   * Notice that some constraints are implemented here, like
-   * there shall be a gap of at least one field between all the
-   * ships.
-   *
-   *
-   */
-  virtual bool placeShips();
 
-  BlockState coordAlreadyUsed(int x, int y);
-  bool checkNeighborhood(int x, int y);
-  void removeAllBlockCoordFromShip(Ship *s);
-  bool isShipStillAlive(Ship *s);
-  bool allShipsDestroyed();
+	/**
+	 *
+	 * \brief Places all ships on the board.
+	 *
+	 * Notice that some constraints are implemented here, like
+	 * there shall be a gap of at least one field between all the
+	 * ships.
+	 *
+	 *
+	 */
+	virtual bool placeShips();
+
+
+	BlockState coordAlreadyUsed(int x, int y);
+	bool checkNeighborhood(int x, int y);
+	void removeAllBlockCoordFromShip(Ship *s);
+	bool isShipStillAlive(Ship *s);
+	bool allShipsDestroyed();
 
 protected:
-  int maxX_;
-  int maxY_;
-  int nmbShips_;
-  Ship **ships_;
+	int    maxX_;
+	int    maxY_;
+	int    nmbShips_;
+	Ship*  *ships_;
 
-  virtual Ship *defaultShipFactory(int nmbBlocks);
-  virtual bool placeSingleShip(int idxShip);
+
+	virtual Ship* defaultShipFactory(int nmbBlocks);
+	virtual bool placeSingleShip(int idxShip);
+
 };
 
 /**
@@ -266,31 +252,6 @@ protected:
  */
 void demoTask3();
 
-class ShipWreck {
-  public:
-    int X_, Y_, N_; //X,Y coordinates, N = number of tries
-    string status;  //return status about hit;
-    bool gameOver;  //bool gameOver = true .> Ending Game
-
-    World w;
-    ShootResult res;
-
-      
-    ShipWreck(){
-        X_ = 0;
-        Y_ = 0;
-        N_ = 0;
-        status = "";
-        gameOver = false;
- 
-    }
-    void getData_(string& input);
-    void calcShot();
-    string sendData_();
-    void output();
-};
-
-string statusToString(ShootResult status);
 
 } // namespace TASK3
 

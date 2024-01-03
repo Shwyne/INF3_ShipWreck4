@@ -28,16 +28,12 @@ int main() {
 	int Y = 1;
 	int tries = 1;
 
-while(1){
-		cout << "Iteration: " << tries++ << endl;
-		/*cout << "X: ";
-		cin >> X;
-		cout << "Y: ";
-        cin >> Y;*/
-		cout << "Attacking on (" << X << ", " << Y << ")" << endl;
+	while(1){
+		//*Kommunikation + Auswertung
 		msg = to_string(X) + ";" + to_string(Y);
 		c.sendData(msg);
 		msg = c.receive(32);
+		//*Augabe der Auswertung
 		if(msg.compare("GAME OVER") == 0){
 			cout << "Game Over!" << endl << "---------------------------------------------" << endl << "You've won after " << tries << " tries!" << endl;
 			break;
@@ -45,6 +41,7 @@ while(1){
 		else{
 			cout << "Result: " << msg << endl;
 		}
+		//*"Algorithmus"
 		if(X == 10){
 			X = 1;
 			Y++;

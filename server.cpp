@@ -17,9 +17,26 @@
 #include <unistd.h>    //contains various constants
 
 #include "SIMPLESOCKET.H"
+#include "TASK3.H"
+
+class TASK3server : public TCPserver {
+    private:
+        TASK3::World *w;    //
+    public:
+        TASK3server(int port, int packageSize) : TCPserver(port, packageSize) {
+        }
+        string myRepsponse(string input){
+            //sw.getData_(input);
+            //sw.output();
+            //return sw.sendData();
+            return string("Hey");
+        }
+};
 
 int main() {
   srand(time(nullptr));
-  TCPserver srv(2022, 25);  // 2022 is the default port, 25 is the package size
+  TASK3server srv(2022, 25);  // 2022 is the default port, 25 is the package size
   srv.run();                // run the server -> Method defined in SIMPLESOCKET.H and implemented in SIMPLESOCKET.CPP
 }
+
+
