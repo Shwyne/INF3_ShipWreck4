@@ -15,6 +15,8 @@ using namespace std;
 
 void InputGame();
 
+void longrun();
+
 int main() {
 	srand(time(NULL));
 	TCPclient c;
@@ -23,7 +25,9 @@ int main() {
 
 	//connect to host
 	c.conn(host , 2022);
+}
 
+void longrun(){
 	int X = 1; 
 	int Y = 1;
 	int tries = 1;
@@ -53,5 +57,4 @@ int main() {
 		
 	}
 }
-
 

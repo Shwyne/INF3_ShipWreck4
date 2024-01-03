@@ -24,6 +24,7 @@ class TASK3server : public TCPserver {
         TASK3::World *w;    //
     public:
         TASK3server(int port, int packageSize) : TCPserver(port, packageSize) {
+          w = new TASK3::World();
         }
         string myRepsponse(string input){
             //sw.getData_(input);
@@ -40,3 +41,14 @@ int main() {
 }
 
 
+// if (compare string) -> delete w; w = new TASK3::World();
+//else return string("ERROR: UNKNOWN COMMAND");
+/*Schusskoordinate empfangen -> if(input.compare(0,6,"COORD[]")){
+  int x,y;
+  TASK3::ShootResult e;
+  string -> x,y
+  e = w->shoot(x,y);
+  return msg(e);
+}
+
+*/
