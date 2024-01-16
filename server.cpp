@@ -9,6 +9,7 @@
 #include <cstdlib> // this includes functions regarding memory allocation
 #include <cstring> // contains string functions
 #include <ctime>   //contains various functions for manipulating date and time
+#include <iostream>
 
 #include <arpa/inet.h> // defines in_addr structure
 #include <netinet/in.h> //contains constants and structures needed for internet domain addresses
@@ -26,20 +27,50 @@ class TASK3server : public TCPserver {
         TASK3server(int port, int packageSize) : TCPserver(port, packageSize) {
           w = new TASK3::World();
         }
-        string myRepsponse(string input){
-            //sw.getData_(input);
-            //sw.output();
-            //return sw.sendData();
-            return string("Hey");
+        string myResponse(string input){
+          
+          if(input.compare(0,7,"newGame") == 0){
+            delete w;
+            w = new TASK3::World();
+            return string("newGame");
+          }
+          else if(input.compare(0,6,"COORD[") == 0){
+            int x, y;
+            TASK3::ShootResult e;
+            string sx = input.substr(6,1);
+            string sy = input.substr(8,1);
+            sscanf(sx.c_str(), "%d", &x);
+            sscanf(sy.c_str(), "%d", &y);
+            e = w->shoot(x,y);
+            w->printBoard();
+            return ShootResultToString(e);
+          }
+          else{
+            return string("ERROR: UNKNOWN COMMAND");
+          }
+        }
+        string ShootResultToString(TASK3::ShootResult e){
+          switch(e){
+            case TASK3::WATER:
+              return string("0");
+            case TASK3::SHIP_HIT:
+              return string("1");
+            case TASK3::SHIP_DESTROYED:
+              return string("2");
+            case TASK3::GAME_OVER:
+              return string("GAME OVER");
+            default:
+              return string("ERROR: UNKNOWN SHOOTRESULT");
+          }
         }
 };
 
 int main() {
+  std::cout << "Server is running..." << std::endl;
   srand(time(nullptr));
   TASK3server srv(2022, 25);  // 2022 is the default port, 25 is the package size
   srv.run();                // run the server -> Method defined in SIMPLESOCKET.H and implemented in SIMPLESOCKET.CPP
 }
-
 
 // if (compare string) -> delete w; w = new TASK3::World();
 //else return string("ERROR: UNKNOWN COMMAND");

@@ -18,10 +18,7 @@
 using namespace std;
 
 int main() {
-  /*srand(time(nullptr));
-  TASK3::demoTask3();*/
   system("gnome-terminal -- ./server");
   system("gnome-terminal -- ./client");
-  cout << "You Won!";
   return 0;
 }

@@ -13,28 +13,43 @@
 
 using namespace std;
 
+TCPclient c;
+
 void InputGame();
 
 void longrun();
 
 int main() {
+	cout << "Client started" << endl;
 	srand(time(NULL));
-	TCPclient c;
 	string host = "localhost";
 	string msg;
-	for(int n = 0; n<1000; n++){
-		longrun();
-		//Send newGame to server
-	}
 	
 	//connect to host
 	c.conn(host , 2022);
+	string message = "";
+	for(int n = 1; n<=10; n++){
+		for(int m = 1; m <= 10; m++){
+			message = "COORD[" + to_string(n) + ";" + to_string(m) + "]";
+			c.sendData(message);
+			message = c.receive(32);
+			cout << message << endl;
+			sleep(1);
+		}
+	}
+	return 0;
+
+	/*for(int n = 0; n<100; n++){
+		//Send newGame to server
+		longrun();
+	}*/
 }
 
 void longrun(){
 	int X = 1; 
 	int Y = 1;
 	int tries = 1;
+	string msg = "";
 
 	while(1){
 		//*Kommunikation + Auswertung
