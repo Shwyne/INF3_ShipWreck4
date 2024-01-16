@@ -18,6 +18,7 @@ TCPclient c;
 void InputGame();
 
 void longrun();
+//check TCPclient::recieve first!
 //Implement for waiting till server transmitted data
 /*        while(1)
         {
