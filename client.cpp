@@ -18,8 +18,8 @@ TCPclient c;
 void InputGame();
 
 void longrun();
-//check TCPclient::recieve first!
-//Implement for waiting till server transmitted data
+//TODO: heck TCPclient::recieve first!
+//TODO: Implement for waiting till server transmitted data
 /*        while(1)
         {
                 for(int i=0; i < maxDataSizeRecv_; i++){
