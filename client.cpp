@@ -22,7 +22,11 @@ int main() {
 	TCPclient c;
 	string host = "localhost";
 	string msg;
-
+	for(int n = 0; n<1000; n++){
+		longrun();
+		//Send newGame to server
+	}
+	
 	//connect to host
 	c.conn(host , 2022);
 }
