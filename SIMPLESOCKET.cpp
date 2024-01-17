@@ -116,7 +116,7 @@ string TCPclient::receive(int size=512){
 	if( recv(sock , buffer , sizeof(buffer) , 0) < 0){
 		puts("recv failed");
 	}
-
+	
 	reply = buffer;
 	return reply;
 }

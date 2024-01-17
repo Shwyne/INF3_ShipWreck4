@@ -37,10 +37,17 @@ class TASK3server : public TCPserver {
           else if(input.compare(0,6,"COORD[") == 0){
             int x, y;
             TASK3::ShootResult e;
-            string sx = input.substr(6,1);
-            string sy = input.substr(8,1);
-            sscanf(sx.c_str(), "%d", &x);
-            sscanf(sy.c_str(), "%d", &y);
+            //Finding Position for x and y
+            size_t start = input.find('[') + 1;
+            size_t end = input.find(']');
+            size_t semicolon = input.find(';');
+            //Removes the brackets and semicolon
+            string sx = input.substr(start, semicolon - start);
+            string sy = input.substr(semicolon + 1, end - semicolon - 1);
+            //Converts the string to int
+            x = stoi(sx);
+            y = stoi(sy);
+            cout << "x: " << x << " y: " << y << endl;
             e = w->shoot(x,y);
             w->printBoard();
             return ShootResultToString(e);
@@ -51,14 +58,15 @@ class TASK3server : public TCPserver {
         }
         string ShootResultToString(TASK3::ShootResult e){
           switch(e){
+            case TASK3::GAME_OVER:
+              return string("GAME OVER");
             case TASK3::WATER:
               return string("0");
             case TASK3::SHIP_HIT:
               return string("1");
             case TASK3::SHIP_DESTROYED:
               return string("2");
-            case TASK3::GAME_OVER:
-              return string("GAME OVER");
+            
             default:
               return string("ERROR: UNKNOWN SHOOTRESULT");
           }

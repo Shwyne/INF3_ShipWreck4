@@ -17,70 +17,64 @@ TCPclient c;
 
 void InputGame();
 
-void longrun();
-//TODO: heck TCPclient::recieve first!
-//TODO: Implement for waiting till server transmitted data
-/*        while(1)
-        {
-                for(int i=0; i < maxDataSizeRecv_; i++){
-                        dataRecv_[i] = '\0';
-                 }*/
+int longrun();
 
 int main() {
-	cout << "Client started" << endl;
-	srand(time(NULL));
-	string host = "localhost";
-	string msg;
+	cout << "Client started" << endl;	//Client started
+	srand(time(NULL));				//Seed for random numbers
+	string host = "localhost";		//Host to connect to
+	unsigned char tries = 0;	//Number of tries, till game is over
+	constexpr unsigned int Iterations = 1000; //Iterations of testing for statistics
 	
 	//connect to host
-	c.conn(host , 2022);
-	string message = "";
-	for(int n = 1; n<=10; n++){
-		for(int m = 1; m <= 10; m++){
-			message = "COORD[" + to_string(n) + ";" + to_string(m) + "]";
-			c.sendData(message);
-			message = c.receive(32);
-			cout << message << endl;
-			sleep(1);
-		}
-	}
-	return 0;
+	cout << "Connecting to " << host << "..." << endl;
+	c.conn(host , 2022);	//Connect to host on port 2022
 
-	/*for(int n = 0; n<100; n++){
+	unsigned char triesArray[Iterations]; // Array to store the number of tries for each iteration
+
+	for(int n = 0; n<Iterations; n++){
+		triesArray[n] = 0;
 		//Send newGame to server
-		longrun();
-	}*/
+		c.sendData("newGame");
+		//Receive newGame from server
+		string msg = c.receive(32);
+		//cout << msg << endl;		 //Debug
+		//Insert Strategy here;
+		triesArray[n] = longrun();
+		cout << "#" << n << ":  " << to_string(triesArray[n]) << endl;
+	}
+	//Calculate average
+	//! Remove in final product... -> only for testing 
+	int sum = 0;
+	for (int i = 0; i < Iterations; i++) {
+		sum += triesArray[i];
+	}
+	int average = sum / Iterations;
+	cout << "-----------------------------------------"	<< endl;
+	cout << "Average: " << average		<< endl;
+	cout << "-----------------------------------------"	<< endl;
+	sleep(100);
+	//! ...till here
+
+	return 0;
 }
 
-void longrun(){
-	int X = 1; 
-	int Y = 1;
-	int tries = 1;
-	string msg = "";
-
-	while(1){
-		//*Kommunikation + Auswertung
-		msg = to_string(X) + ";" + to_string(Y);
-		c.sendData(msg);
-		msg = c.receive(32);
-		//*Augabe der Auswertung
-		if(msg.compare("GAME OVER") == 0){
-			cout << "Game Over!" << endl << "---------------------------------------------" << endl << "You've won after " << tries << " tries!" << endl;
-			break;
+//* Kurze Erklärung zum Code:
+int longrun(){
+	string msg;	//String, welcher zwischen Client und Server ausgetauscht wird
+	int tries = 0;	//Anzahl der Versuche, bis das Spiel vorbei ist, wird zu Beginn auf 0 gesetzt
+	for(int n = 1; n<=10; n++){	//Einfacher Algorithmus, for->for = Abtasten Zeile für Zeile
+		for(int m = 1; m <= 10; m++){
+			tries++;	//Versuch wird bei jedem Schussversuch hochgezählt.
+			msg = "COORD[" + to_string(m) + ";" + to_string(n) + "]";	//Nachricht wird zusammengesetzt
+			//Der Server braucht dabei die Struktur: COORD[x;y], wobei x und y im Bereich [1,10]
+			c.sendData(msg);	//Nachricht wird an Server gesendet
+			msg = c.receive(32);	//Nachricht vom Server wird empfangen
+			if(msg == "GAME OVER"){		//Wenn GAME OVER, 
+				return tries;				//dann wird die Anzahl der Versuche zurückgegeben
+			}
 		}
-		else{
-			cout << "Result: " << msg << endl;
-		}
-		//*"Algorithmus"
-		if(X == 10){
-			X = 1;
-			Y++;
-		}
-		else{
-			X++;
-		}
-		sleep(1);
-		
-	}
+	}	
+	return -1;	//Wenn kein Game-Over erreicht wurde, wird -1 zurückgegeben, da dann ein Fehlversuch vorliegt.
 }
 
