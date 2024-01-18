@@ -7,3 +7,7 @@
 *.o
 *.obj
 
+# client server main
+main
+client
+server
