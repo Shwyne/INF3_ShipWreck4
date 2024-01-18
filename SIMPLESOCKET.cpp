@@ -163,7 +163,7 @@ void TCPserver::run(){
 			cout << "asked to close server\n";
 			break;
 		}
-     }
+    }
     close(clintConnt_);
     sleep(1);
 

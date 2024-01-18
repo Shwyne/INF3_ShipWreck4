@@ -8,6 +8,7 @@
 #include <string>
 #include <iostream>
 #include <unistd.h> //contains various constants
+#include <fstream>
 
 #include "SIMPLESOCKET.H"
 
@@ -15,23 +16,35 @@ using namespace std;
 
 TCPclient c;
 
-void InputGame();
+//*Variables and Constexpr:
+unsigned char tries = 0;	//Number of tries, till game is over
+constexpr unsigned int Iterations = 1000; //Iterations of testing for statistics
 
 int longrun();
 
 int main() {
+	//*Setup Client
 	cout << "Client started" << endl;	//Client started
 	srand(time(NULL));				//Seed for random numbers
 	string host = "localhost";		//Host to connect to
-	unsigned char tries = 0;	//Number of tries, till game is over
-	constexpr unsigned int Iterations = 1000; //Iterations of testing for statistics
 	
-	//connect to host
+	//*connect to host
 	cout << "Connecting to " << host << "..." << endl;
 	c.conn(host , 2022);	//Connect to host on port 2022
 
-	unsigned char triesArray[Iterations]; // Array to store the number of tries for each iteration
+	unsigned char triesArray[Iterations]; //! Temp Array for Average calculation
+	
+	//*Open file for writing
+	ofstream ExportData;
+	ExportData.open("ExportData.csv");
+	if(ExportData.is_open()){
+		cout << "DataFile opened successfully, Program can export now" << endl;
+	}
+	else{
+		cout << "Error opening Datafile" << endl;
+	}
 
+	//*Start Testing
 	for(int n = 0; n<Iterations; n++){
 		triesArray[n] = 0;
 		//Send newGame to server
@@ -40,10 +53,13 @@ int main() {
 		string msg = c.receive(32);
 		//cout << msg << endl;		 //Debug
 		//Insert Strategy here;
-		triesArray[n] = longrun();
+		int currentRun = longrun();
+		triesArray[n] = currentRun;
+		ExportData << n << ";" << currentRun << endl;
 		cout << "#" << n << ":  " << to_string(triesArray[n]) << endl;
 	}
-	//Calculate average
+
+	//*Calculate average
 	//! Remove in final product... -> only for testing 
 	int sum = 0;
 	for (int i = 0; i < Iterations; i++) {
@@ -53,8 +69,19 @@ int main() {
 	cout << "-----------------------------------------"	<< endl;
 	cout << "Average: " << average		<< endl;
 	cout << "-----------------------------------------"	<< endl;
-	sleep(100);
 	//! ...till here
+
+	//*Close file
+	ExportData.close();
+	if(ExportData.is_open() == false){
+		cout << "Data Exported" << endl;
+	}
+	else{
+		cout << "Error closing Datafile" << endl;
+	}
+
+	sleep(100);	//! Can be removed, only for testing so the console doesnt close immediately
+	
 
 	return 0;
 }
