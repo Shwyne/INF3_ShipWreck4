@@ -20,6 +20,9 @@
 #include "SIMPLESOCKET.H"
 #include "TASK3.H"
 
+bool debug = false;
+
+
 class TASK3server : public TCPserver {
     private:
         TASK3::World *w;    //
@@ -28,8 +31,11 @@ class TASK3server : public TCPserver {
           w = new TASK3::World();
         }
         string myResponse(string input){
-          
-          if(input.compare(0,7,"newGame") == 0){
+          if(input.compare(0,5,"DEBUG") == 0){
+            debug = true;
+            return string("DEBUG1");
+          }
+          else if(input.compare(0,7,"newGame") == 0){
             delete w;
             w = new TASK3::World();
             return string("newGame");
@@ -47,9 +53,9 @@ class TASK3server : public TCPserver {
             //Converts the string to int
             x = stoi(sx);
             y = stoi(sy);
-            cout << "x: " << x << " y: " << y << endl;
+            if(debug) cout << "x: " << x << " y: " << y << endl;
             e = w->shoot(x,y);
-            w->printBoard();
+            if(debug) w->printBoard();
             return ShootResultToString(e);
           }
           else{

@@ -5,8 +5,8 @@
  *      Author: aml
  *  Modified: WiSe23_24
  * 		by Group: 
- * 		- 1: 	pfil
- * 		- 2: 	nkla
+ * 		- 1: 	nkla
+ * 		- 2: 	pfil
  * 		- 3: 	tste
  */
 
@@ -16,8 +16,6 @@
 #include <fstream>
 #include <random>
 #include <set>
-#include <vector>
-#include <cstdlib> // for atoi
 
 #include "SIMPLESOCKET.H"
 
@@ -27,10 +25,13 @@ TCPclient c;
 
 //*Variables and Constexpr:
 unsigned char tries = 0;	//Number of tries, till game is over
-unsigned int Iterations = 1000; //Iterations of testing for statistics
+constexpr unsigned int Iterations = 1000; //Iterations of testing for statistics
+bool debug = false;	//Debug mode, if true, then after every shot the program will pause for a second
 
 int longrun();
 int randomRun();
+int HuntRandom();
+int tactical02();
 
 int main() {
 	//*Setup Client
@@ -53,26 +54,56 @@ int main() {
 	else{
 		cout << "Error opening Datafile" << endl;
 	}
+	//*Choose Debug mode
+	cout << "Debug mode? (y/n)" << endl;
+	char debugMode;
+	cin >> debugMode;
+	if(debugMode == 'y'){
+		debug = true;
+		cout << "Debug mode activated" << endl;
+		c.sendData("DEBUG");
+		string msg = c.receive(32);
+		if(msg.compare(0,6,"DEBUG1") == 0){
+			cout << "Server: Debug active" << endl;
+		}
+		else{
+			cout << "Server-ERROR: Debug failed!" << endl;
+			sleep(10);
+			return 0;
+		}
+	}
+	else{
+		cout << "Debug mode deactivated" << endl;
+	}
 	//*Choose Tactic
 	cout << "Choose Tactic to test: " << endl;
 	cout << "1: Longrun" << endl;
 	cout << "2: Random" << endl;
+	cout << "3: Hunt (random)" << endl;
+	cout << "4: Tactical02" << endl;
 	int tactic;
 	cin >> tactic;
-	if (tactic == 1) {
-		cout << "Longrun chosen" << endl;
-	}
-	else if (tactic == 2) {
-		cout << "Random chosen" << endl;
-	}
-	else {
-		cout << "Invalid input, exiting" << endl;
-		sleep(10);
-		return 0;
+	switch (tactic) {
+		case 1:
+			cout << "Longrun chosen" << endl;
+			break;
+		case 2:
+			cout << "Random chosen" << endl;
+			break;
+		case 3:
+			cout << "Hunt (random) chosen" << endl;
+			break;
+		case 4:
+			cout << "Tactical02 chosen" << endl;
+			break;
+		default:
+			cout << "Invalid input, exiting" << endl;
+			sleep(10);
+			return 0;
 	}
 
 	//*Start Testing
-	for(int n = 0; n<Iterations; n++){
+	for(int n = 1; n<=Iterations; n++){
 		triesArray[n] = 0;
 		//Send newGame to server
 		c.sendData("newGame");
@@ -88,12 +119,23 @@ int main() {
 			case 2:
 				currentRun = randomRun();
 				break;
+			case 3:
+				currentRun = HuntRandom();
+				break;
+			case 4:
+				currentRun = tactical02();
+				break;
 			default:
 				cout << "Invalid strategy, exiting" << endl;
 				sleep(10);
 				return 0;
 		}
 		triesArray[n] = currentRun;
+		if(triesArray[n] == 0){
+			cout << "WARNING: Ending program, because of empty strategy" << endl;
+			sleep(10);
+			return 0;
+		}
 		ExportData << n << ";" << currentRun << endl;
 		cout << "#" << n << ":  " << to_string(triesArray[n]) << endl;
 	}
@@ -139,19 +181,20 @@ int longrun(){
 			if(msg == "GAME OVER"){		//Wenn GAME OVER, 
 				return tries;				//dann wird die Anzahl der Versuche zurückgegeben
 			}
+			if(debug) sleep(1);
 		}
 	}	
 	return -1;	//Wenn kein Game-Over erreicht wurde, wird -1 zurückgegeben, da dann ein Fehlversuch vorliegt.
 }
 
 int randomRun() {
-	std::string msg;    // String, welcher zwischen Client und Server ausgetauscht wird
+	string msg;    // String, welcher zwischen Client und Server ausgetauscht wird
 	int tries = 0;      // Anzahl der Versuche, bis das Spiel vorbei ist, wird zu Beginn auf 0 gesetzt
-	std::set<int> usedCoordinates;   // Set, um bereits verwendete Koordinaten zu speichern
+	set<int> usedCoordinates;   // Set, um bereits verwendete Koordinaten zu speichern
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	std::uniform_int_distribution<> dis(1, 10);
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_int_distribution<> dis(1, 10);
 
 	while (usedCoordinates.size() < 100) {
 		int x = dis(gen);
@@ -161,15 +204,75 @@ int randomRun() {
 		if (usedCoordinates.count(coordinate) == 0) {
 			usedCoordinates.insert(coordinate);
 			tries++;    // Versuch wird bei jedem Schussversuch hochgezählt.
-			msg = "COORD[" + std::to_string(x) + ";" + std::to_string(y) + "]";    // Nachricht wird zusammengesetzt
+			msg = "COORD[" + to_string(x) + ";" + to_string(y) + "]";    // Nachricht wird zusammengesetzt
 			// Der Server braucht dabei die Struktur: COORD[x;y], wobei x und y im Bereich [1,10]
 			c.sendData(msg);    // Nachricht wird an Server gesendet
 			msg = c.receive(32);    // Nachricht vom Server wird empfangen
 			if (msg == "GAME OVER") {    // Wenn GAME OVER,
 				return tries;                // dann wird die Anzahl der Versuche zurückgegeben
 			}
+			if(debug) sleep(1);
 		}
 	}
 	return -1;    // Wenn kein Game-Over erreicht wurde, wird -1 zurückgegeben, da dann ein Fehlversuch vorliegt.
 }
 
+int HuntRandom() {
+    string msg;    // String, welcher zwischen Client und Server ausgetauscht wird
+	int tries = 0;      // Anzahl der Versuche, bis das Spiel vorbei ist, wird zu Beginn auf 0 gesetzt
+	set<int> usedCoordinates;   // Set, um bereits verwendete Koordinaten zu speichern
+	bool targetMode = false;
+    int lastHitX = -1;
+    int lastHitY = -1;
+    int direction = 0; // 0 = up, 1 = right, 2 = down, 3 = left
+
+	random_device rd;
+	mt19937 gen(rd());
+	uniform_int_distribution<> dis(1, 10);
+
+    while (usedCoordinates.size() < 100) {
+        int x, y;
+
+        if (targetMode) {
+            // Try to sink the ship we've already hit
+            switch (direction) {
+                case 0: y = lastHitY - 1; x = lastHitX; break;
+                case 1: x = lastHitX + 1; y = lastHitY; break;
+                case 2: y = lastHitY + 1; x = lastHitX; break;
+                case 3: x = lastHitX - 1; y = lastHitY; break;
+            }
+            direction = (direction + 1) % 4;
+        } else {
+            // Hunt for a new ship
+            x = dis(gen);
+            y = dis(gen);
+        }
+
+        int coordinate = x * 10 + y;
+
+        if (usedCoordinates.count(coordinate) == 0) {
+            usedCoordinates.insert(coordinate);
+            tries++;
+            msg = "COORD[" + std::to_string(x) + ";" + std::to_string(y) + "]";
+            c.sendData(msg);
+            msg = c.receive(32);
+
+            if (msg == "HIT") {
+                targetMode = true;
+                lastHitX = x;
+                lastHitY = y;
+            } else if (msg == "MISS") {
+                targetMode = false;
+            } else if (msg == "GAME OVER") {
+                return tries;
+            }
+			if(debug) sleep(1);
+        }
+    }
+    return -1;
+}
+
+int tactical02(){
+	cout << "Not implemented yet" << endl;
+	return 0;
+}
