@@ -23,13 +23,32 @@
 bool debug = false;
 
 
+/**
+ * @class TASK3server
+ * @brief Represents a server for TASK3 game.
+ * 
+ * This class inherits from TCPserver and provides functionality for handling game commands and responses.
+ */
 class TASK3server : public TCPserver {
     private:
-        TASK3::World *w;    //
+        TASK3::World *w;    // Pointer to the game world object
     public:
+        /**
+         * @brief Constructs a TASK3server object.
+         * 
+         * @param port The port number for the server.
+         * @param packageSize The size of the package.
+         */
         TASK3server(int port, int packageSize) : TCPserver(port, packageSize) {
           w = new TASK3::World();
         }
+
+        /**
+         * @brief Handles the client's request and returns the server's response.
+         * 
+         * @param input The client's request.
+         * @return The server's response.
+         */
         string myResponse(string input){
           if(input.compare(0,5,"DEBUG") == 0){
             debug = true;
@@ -62,6 +81,13 @@ class TASK3server : public TCPserver {
             return string("ERROR: UNKNOWN COMMAND");
           }
         }
+
+        /**
+         * @brief Converts a ShootResult enum value to its corresponding string representation.
+         * 
+         * @param e The ShootResult enum value.
+         * @return The string representation of the ShootResult.
+         */
         string ShootResultToString(TASK3::ShootResult e){
           switch(e){
             case TASK3::GAME_OVER:
@@ -85,15 +111,3 @@ int main() {
   TASK3server srv(2022, 25);  // 2022 is the default port, 25 is the package size
   srv.run();                // run the server -> Method defined in SIMPLESOCKET.H and implemented in SIMPLESOCKET.CPP
 }
-
-// if (compare string) -> delete w; w = new TASK3::World();
-//else return string("ERROR: UNKNOWN COMMAND");
-/*Schusskoordinate empfangen -> if(input.compare(0,6,"COORD[]")){
-  int x,y;
-  TASK3::ShootResult e;
-  string -> x,y
-  e = w->shoot(x,y);
-  return msg(e);
-}
-
-*/

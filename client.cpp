@@ -31,7 +31,6 @@ bool debug = false;	//Debug mode, if true, then after every shot the program wil
 int longrun();
 int randomRun();
 int HuntRandom();
-int tactical02();
 
 int main() {
 	//*Setup Client
@@ -80,7 +79,6 @@ int main() {
 	cout << "1: Longrun" << endl;
 	cout << "2: Random" << endl;
 	cout << "3: Hunt (random)" << endl;
-	cout << "4: Tactical02" << endl;
 	int tactic;
 	cin >> tactic;
 	switch (tactic) {
@@ -92,9 +90,6 @@ int main() {
 			break;
 		case 3:
 			cout << "Hunt (random) chosen" << endl;
-			break;
-		case 4:
-			cout << "Tactical02 chosen" << endl;
 			break;
 		default:
 			cout << "Invalid input, exiting" << endl;
@@ -121,9 +116,6 @@ int main() {
 				break;
 			case 3:
 				currentRun = HuntRandom();
-				break;
-			case 4:
-				currentRun = tactical02();
 				break;
 			default:
 				cout << "Invalid strategy, exiting" << endl;
@@ -186,6 +178,7 @@ int longrun(){
 	}	
 	return -1;	//Wenn kein Game-Over erreicht wurde, wird -1 zurückgegeben, da dann ein Fehlversuch vorliegt.
 }
+
 
 int randomRun() {
 	string msg;    // String, welcher zwischen Client und Server ausgetauscht wird
@@ -270,9 +263,4 @@ int HuntRandom() {
         }
     }
     return -1;
-}
-
-int tactical02(){
-	cout << "Not implemented yet" << endl;
-	return 0;
 }

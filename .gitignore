@@ -11,3 +11,6 @@
 main
 client
 server
+
+# Visual Studio Code folder
+.vscode
